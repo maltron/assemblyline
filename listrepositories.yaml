@@ -1,0 +1,15 @@
+---
+- name: List Repositories for a user
+  hosts: localhost
+  connection: local
+  vars:
+     service_gogs: http://gogs-cicd.cloudapps.example.com/api/v1
+     user: demo
+     password: demo
+     contenttype: "application/json"
+  tasks:
+     - name: List all Repositories for this user
+       uri: method=GET HEADER_Content-type={{ contenttype }} url={{ service_gogs }}/user/repos user={{ user }} password={{ password }} force_basic_auth=yes
+       register: result
+
+     - debug: var=result

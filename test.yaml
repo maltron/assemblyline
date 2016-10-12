@@ -1,0 +1,6 @@
+---
+- name: Testing...1...2...3
+  hosts: localhost
+  connection: local
+  tasks:
+     - debug: msg="Testing...1...2..3"
