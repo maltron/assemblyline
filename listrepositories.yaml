@@ -3,7 +3,7 @@
   hosts: localhost
   connection: local
   vars:
-     service_gogs: http://gogs-cicd.cloudapps.example.com/api/v1
+     service_gogs: http://gogs.cloudapps.example.com/api/v1
      user: demo
      password: demo
      contenttype: "application/json"

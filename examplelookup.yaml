@@ -1,0 +1,10 @@
+---
+- name: Lookup File
+  hosts: localhost
+  connection: local
+  vars:
+     contents: "{{ lookup('file', 'helloworld.txt') }}"
+  tasks:
+     - name: Content of helloworld.txt
+       debug: var=contents
+  
