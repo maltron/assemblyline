@@ -1,0 +1,6 @@
+- name: Create the repository
+  uri: method=POST body_format=json url={{ gogs_url_api }}/user/repos user={{ user }} password={{ password }} force_basic_auth=yes body="{\"name\":\"{{ project_name | mandatory }}\", \"description\":\"{{ project_description | default(\"\") }}\", \"private\":{{ project_private | default(false) }} }"
+  register: json_result
+  failed_when: json_result.status != 201
+  tags: gogs
+

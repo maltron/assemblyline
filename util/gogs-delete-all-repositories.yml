@@ -1,0 +1,17 @@
+---
+- name: Delete all Repositories
+  hosts: localhost
+  connection: local
+  tasks:
+     - name: List all Repositories
+       uri: method=GET body_format=json url={{ gogs_url_api }}/user/repos 
+            user={{ user }} password={{ password }} force_basic_auth=yes
+       register: gogs_json_result
+       tags: gogs
+
+     - name: Delete all
+       uri: method=DELETE body_format=json url={{ gogs_url_api }}/repos/{{ item.full_name }}
+            user={{ user }} password={{ password }} force_basic_auth=yes
+       register: gogs_delete_result
+       with_items: "{{ gogs_json_result.json }}"
+       failed_when: gogs_delete_result.status != 204

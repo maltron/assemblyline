@@ -1,8 +1,14 @@
 ---
-- name: Testing...1...2...3
+- name: Assembly Line
   hosts: localhost
   connection: local
   tasks:
+     - name: Gogs: First let's check if the repository already exists
+       include: components/gogs/repository_already_exists.yml
+
+     - name: Gogs: Create the repository
+       include: components/gogs/create_repository.yml
+
      - name: Create all the necessary directory
        file: path={{ project_directory }}/{{ project_name }} state=directory recurse=yes
 
@@ -10,5 +16,3 @@
             repo={{ gogs_url }}/{{ user }}/{{ project_name }}.git
        register: git_results
        failed_when: git_results.msg not in ["Failed to checkout branch master","Could not determine remote revision for HEAD"]
-
-     - debug: msg=json_result 

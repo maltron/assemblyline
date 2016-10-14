@@ -1,0 +1,13 @@
+user: demo
+password: demo
+
+project_name: helloworld
+project_directory: /tmp/working
+
+# Gogs
+# project_description: A simple example of repository description
+# project_private: False
+gogs_url: http://gogs.cloudapps.example.com
+gogs_url_api: http://gogs.cloudapps.example.com/api/v1
+
+# 

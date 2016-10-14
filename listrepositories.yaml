@@ -2,14 +2,30 @@
 - name: List Repositories for a user
   hosts: localhost
   connection: local
-  vars:
-     service_gogs: http://gogs.cloudapps.example.com/api/v1
-     user: demo
-     password: demo
-     contenttype: "application/json"
   tasks:
      - name: List all Repositories for this user
-       uri: method=GET HEADER_Content-type={{ contenttype }} url={{ service_gogs }}/user/repos user={{ user }} password={{ password }} force_basic_auth=yes
+       uri: method=GET HEADER_Content-type={{ content_type }} url={{ gogs_url }}/user/repos user={{ user }} password={{ password }} force_basic_auth=yes
        register: result
+       failed_when: result.status != 200
 
-     - debug: var=result
+     - debug: var=result.status
+
+#     - name: FULL RESULT
+#       debug: msg="{{ result.json }}"
+
+#     - name: Just the Full Name
+#       debug: msg="FULL NAME:{{ item.full_name }} and FOUND:{{ repository_name in item.full_name }}"
+#       with_items: "{{ result.json }}"
+
+#     - name: Did you find any repository that matches ? 
+#       set_fact:  found=True
+#       with_items: "{{ result.json }}"
+#       when: "{{ repository_name in item.full_name }}"
+
+#     - name: The final Result
+#       debug: msg="FOUND = {{ found }}"
+
+#     - fail: msg="Repository {{ repository }} already exists"
+#       when: found is defined
+
+#     - debug: msg="Next Message after failing"

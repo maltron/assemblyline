@@ -1,0 +1,18 @@
+- name: Checking the requested repository already exists
+  uri: method=GET body_format=json url={{ gogs_url_api }}/user/repos user={{ user }} password={{ password }} force_basic_auth=yes
+  register: gogs_json_result
+  tags: gogs
+
+- name: Is there any repository's name that matches ?
+  set_fact: found_repository=True
+  with_items: "{{ gogs_json_result.json }}"
+  when: "{{ project_name in item.full_name }}"
+  tags: gogs
+
+- name: Repository already exists ?
+  fail: msg="Repository {{ project_name }} already exists"
+  when: found_repository is defined
+  tags: gogs
+
+
+   
