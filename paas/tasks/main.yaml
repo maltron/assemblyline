@@ -1,0 +1,7 @@
+- name: Login into OpenShift
+  command: oc login --username={{ user }} --password={{ password }} --insecure-skip-tls-verify --server=https://openshift.example.com:8443
+  tags: openshift
+
+- name: Creating Project 
+  command: oc new-project {{ project_name }} --description="{{ project_description }}"
+  tags: openshift

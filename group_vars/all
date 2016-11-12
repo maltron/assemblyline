@@ -1,15 +1,15 @@
-user: demo
-password: demo
+user: mauricio
+password: maltron
 
-project_name: helloworld
+project_name: helloworld2
+project_description: A simple example of repository description
+project_private: False
 project_directory: /tmp/working
 
 # Gogs
-# project_description: A simple example of repository description
-# project_private: False
 gogs_url: http://gogs.cloudapps.example.com
-gogs_url_api: http://gogs.cloudapps.example.com/api/v1
+gogs_url_api: "{{ gogs_url }}/api/v1"
 
 # OpenShift
-master_url: https://master.example.com:8443
-master_url_api: https://master.example.com:8443/oapi/v1 
+master_url: https://openshift.example.com:8443
+master_url_api: "{{ master_url }}/oapi/v1"

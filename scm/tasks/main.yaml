@@ -1,0 +1,18 @@
+- name: Check if the Repository already exists
+  uri: method=GET body_format=json url={{ gogs_url_api }}/user/repos
+       force_basic_auth=yes user={{ user | mandatory }} password={{ password | mandatory }}
+  register: gogs_list_repositories
+  tags: gogs
+
+- fail: msg="Repository {{ project_name }} already exists" 
+  when: "{{ project_name in item.full_name }}"
+  with_items: "{{ gogs_list_repositories.json }}"
+  tags: gogs
+
+- name: Create a new Repository named {{ project_name }}
+  uri: method=POST body_format=json url={{ gogs_url_api }}/user/repos
+       force_basic_auth=yes user={{ user | mandatory }} password={{ password | mandatory }}
+       body="{\"name\":\"{{ project_name }}\", \"description\":\"{{ project_description }}\", \"private\":{{ project_private | default(false) }} }"
+  register: gogs_create_repository
+  failed_when: gogs_create_repository.status != 201
+  tags: gogs

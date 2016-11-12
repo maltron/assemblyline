@@ -1,0 +1,7 @@
+---
+- name: Create a Project
+  hosts: localhost
+  connection: local
+  roles:
+     - scm
+     - paas
