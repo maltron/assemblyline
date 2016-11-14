@@ -1,0 +1,6 @@
+- name: Testing Template
+  hosts: localhost
+  vars:
+     value: "Hello World and more"
+  tasks:
+     - template: src=output.txt.j2 dest=./output.txt

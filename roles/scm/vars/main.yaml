@@ -1,0 +1,5 @@
+# Gogs
+gogs_url: http://gogs.cloudapps.example.com
+gogs_url_api: "{{ gogs_url }}/api/v1"
+
+project_description: ""

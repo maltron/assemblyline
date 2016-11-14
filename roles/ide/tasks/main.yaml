@@ -1,0 +1,27 @@
+- include: ../../../common/check_mandatory_variables.yaml
+  tags: netbeans
+
+- name: Create a Project Directory
+  file: path={{ project_directory }}/{{ item }} state=directory
+  with_items: 
+     - src/main/resources/META-INF
+     - src/main/webapp/WEB-INF
+  tags: netbeans
+
+- name: Create Source Code Directory based on Project's Package
+  file: path={{ project_directory }}/src/main/java/{{ project_package | regex_replace("\.", "/") }} state=directory
+  tags: netbeans
+
+- name: Create all the necessary files inside the project directory
+  template: src=project/netbeans/{{ item }}.j2 dest={{ project_directory }}/{{ item }}
+  with_items:
+     - nb-configuration.xml
+     - pom.xml
+     - src/main/resources/META-INF/persistence.xml
+     - src/main/resources/META-INF/rawdata.sql
+     - src/main/webapp/index.html
+     - src/main/webapp/WEB-INF/beans.xml
+     - src/main/webapp/WEB-INF/jboss-deployment-structure.xml
+     - src/main/webapp/WEB-INF/jboss-web.xml
+     - src/main/webapp/WEB-INF/web.xml
+  tags: netbeans

@@ -1,0 +1,9 @@
+- name: My First Task
+  hosts: localhost
+  tasks:
+     - debug: msg="First"
+
+- name: My Second Task
+  hosts: localhost
+  tasks: 
+     - debug: msg="Second"
