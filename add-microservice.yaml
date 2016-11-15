@@ -2,13 +2,6 @@
 - name: "Adding a MicroService environment for a Project{{ ':' }} \"{{ microservice }}\", Package{{ ':' }} \"{{ microservice_package }}\""
   hosts: localhost
   connection: local
-  tasks:
-     - name: Checking all the necessary variables
-       fail: msg="### Variable{{ ':' }}\"{{ item }}\" is missing. Please use with -e  option{{ ':'}} ansible-playbook add-microservice.yaml -e microservice=\"example\" -e microservice_package=\"com.example.microservice\""  
-       when: item is not defined
-       with_items: 
-          - microservice
-          - microservice_package
-
-     - name: Create the directory 
-
+  roles:
+     - microservice
+     - ide

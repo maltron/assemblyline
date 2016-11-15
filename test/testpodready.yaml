@@ -1,0 +1,6 @@
+---
+- name: Waiting for a specific Pod to be Ready
+  hosts: localhost
+  connection: local
+  tasks:
+     

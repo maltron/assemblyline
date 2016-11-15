@@ -1,0 +1,154 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: WildFly Test Environment
+    labels:
+      name: {{ microservice_name }}      
+      type: microservice
+      component: application-server
+    name: {{ microservice_name }}-as
+  spec:
+    ports:
+    - port: 8080
+      targetPort: 8080
+    selector:
+      name: {{ microservice_name }}
+      deploymentConfig: {{ microservice_name }}-as
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: MySQL Database for Test Environment
+    labels:
+      name: {{ microservice_name }}
+      type: microservice
+      component: database-server
+    name: {{ microservice_name }}-db
+  spec:
+    ports:
+    - port: 3306
+      targetPort: 3306
+    selector:
+      name: {{ microservice_name }}
+      deploymentConfig: {{ microservice_name }}-db
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      name: {{ microservice_name }}
+      type: microservice
+      component: application-server
+    name: {{ microservice_name }}-as
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      name: {{ microservice_name }}
+      type: microservice
+      component: database-server
+    name: {{ microservice_name }}-db
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      name: {{ microservice_name }}
+      type: microservice
+      component: application-server
+    name: {{ microservice_name }}-as
+  spec:
+    replicas: 1
+    selector:
+      name: {{ microservice_name }}
+      deploymentConfig: {{ microservice_name }}-as
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          name: {{ microservice_name }}
+          type: microservice
+          component: application-server
+          deploymentConfig: {{ microservice_name }}-as
+        name: {{ microservice_name }}-as
+      spec:
+        containers:
+        - env:
+          - name: DATASOURCE_CONNECTION
+            value: jdbc:mysql://database-server:3306/microservice_database
+          - name: DATASOURCE_USERNAME
+            value: mauricio
+          - name: DATASOURCE_PASSWORD
+            value: maltron
+          image: wildfly-test:latest
+          imagePullPolicy: IfNotPresent
+          name: application-server
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      name: {{ microservice_name }}
+      type: microservice
+      component: database-server
+    name: {{ microservice_name }}-db
+  spec:
+    replicas: 1
+    selector:
+      name: {{ microservice_name }}
+      deploymentConfig: {{ microservice_name }}-db
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          name: {{ microservice_name }}
+          component: database-server
+          deploymentConfig: {{ microservice_name }}-db
+        name: {{ microservice_name }}-db
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: mauricio
+          - name: MYSQL_PASSWORD
+            value: maltron
+          - name: MYSQL_DATABASE
+            value: microservice_database
+          image: ''
+          imagePullPolicy: IfNotPresent
+          name: {{ microservice_name }}-db
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+        terminationGracePeriodSeconds: 60
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - {{ microservice_name }}-db
+        from:
+          kind: ImageStreamTag
+          name: mysql:latest
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  id: application-server
+  kind: Route
+  metadata:
+    annotations:
+      description: WildFly's External Route
+    labels:
+      name: {{ microservice_name }}
+      type: microservice
+      component: application-server
+    name: {{ microservice_name }}-as
+  spec:
+    to:
+      name: {{ microservice_name }}-as

@@ -1,0 +1,4 @@
+- include: mandatory_variables.yaml
+
+- fail: msg="### Variable{{ ':' }} <project_display_name> is undefined. Please use -e option{{ ':' }} -e project_display_name=My First Project"
+  when: project_display_name is not defined

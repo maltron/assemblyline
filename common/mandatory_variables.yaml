@@ -1,0 +1,11 @@
+- fail: msg="### Variable{{ ':' }} <username> is undefined. Please use -e option{{ ':' }} -e username=johndoe"
+  when: username is not defined
+
+- fail: msg="### Variable{{ ':' }} <password> is undefined. Please use -e option{{ ':' }} -e password=mysecret"
+  when: password is not defined
+
+- fail: msg="### Variable{{ ':' }} <project_name> is undefined. Please use -e option{{ ':' }} -e project_name=example"
+  when: project_name is not defined
+
+- fail: msg="### Variable{{ ':' }} <project_directory> is undefined. Please use -e option{{ ':' }} -e project_directory=/myproject"
+  when: project_directory is not defined

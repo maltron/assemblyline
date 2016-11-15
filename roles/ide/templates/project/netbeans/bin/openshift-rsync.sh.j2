@@ -1,0 +1,2 @@
+POD_NAME=$(oc get pods -l component=application-server,name={{ microservice_name }} | grep -v NAME | awk '{print $1}')
+oc rsync --watch --no-perms=false --progress=false {{ project_directory }}/{{ project_name }}/{{ microservice_name }}/target/{{ microservice_name}}-1.0/ ${POD_NAME}:{{ pod_directory_deployment }}

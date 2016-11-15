@@ -7,64 +7,73 @@ items:
     annotations:
       description: WildFly Test Environment
     labels:
-      stack: microservice
-      application: application-server
-    name: application-server
+      name: hello      
+      type: microservice
+      component: application-server
+    name: hello-as
   spec:
     ports:
     - port: 8080
       targetPort: 8080
     selector:
-      deploymentConfig: application-server
+      name: hello
+      deploymentConfig: hello-as
 - apiVersion: v1
   kind: Service
   metadata:
     annotations:
       description: MySQL Database for Test Environment
     labels:
-      stack: microservice
-      application: database-server
-    name: database-server
+      name: hello
+      type: microservice
+      component: database-server
+    name: hello-db
   spec:
     ports:
     - port: 3306
       targetPort: 3306
     selector:
-      deploymentConfig: database-server
+      name: hello
+      deploymentConfig: hello-db
 - apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
-      stack: microservice
-      application: application-server
-    name: application-server
+      name: hello
+      type: microservice
+      component: application-server
+    name: hello-as
 - apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
-      stack: microservice
-      application: database-server
-    name: database-server
+      name: hello
+      type: microservice
+      component: database-server
+    name: hello-db
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
-      stack: microservice
-      application: application-server
-    name: application-server
+      name: hello
+      type: microservice
+      component: application-server
+    name: hello-as
   spec:
     replicas: 1
     selector:
-      deploymentConfig: application-server
+      name: hello
+      deploymentConfig: hello-as
     strategy:
       type: Recreate
     template:
       metadata:
         labels:
-          stack: microservice
-          application: application-server
-          deploymentConfig: application-server
-        name: application-server
+          name: hello
+          type: microservice
+          component: application-server
+          deploymentConfig: hello-as
+        name: hello-as
       spec:
         containers:
         - env:
@@ -84,21 +93,24 @@ items:
   kind: DeploymentConfig
   metadata:
     labels:
-      stack: microservice
-      application: database-server
-    name: database-server
+      name: hello
+      type: microservice
+      component: database-server
+    name: hello-db
   spec:
     replicas: 1
     selector:
-      deploymentConfig: database-server
+      name: hello
+      deploymentConfig: hello-db
     strategy:
       type: Recreate
     template:
       metadata:
         labels:
-          application: database-server
-          deploymentConfig: database-server
-        name: database-server
+          name: hello
+          component: database-server
+          deploymentConfig: hello-db
+        name: hello-db
       spec:
         containers:
         - env:
@@ -110,7 +122,7 @@ items:
             value: microservice_database
           image: ''
           imagePullPolicy: IfNotPresent
-          name: database-server
+          name: hello-db
           ports:
           - containerPort: 3306
             protocol: TCP
@@ -119,7 +131,7 @@ items:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - database-server
+        - hello-db
         from:
           kind: ImageStreamTag
           name: mysql:latest
@@ -133,9 +145,10 @@ items:
     annotations:
       description: WildFly's External Route
     labels:
-      stack: microservice
-      application: application-server
-    name: application-server
+      name: hello
+      type: microservice
+      component: application-server
+    name: hello-as
   spec:
     to:
-      name: application-server
+      name: hello-as

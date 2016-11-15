@@ -1,4 +1,4 @@
-- include: ../../../common/check_mandatory_variables.yaml
+- include: ../../../common/create_project_mandatory_variables.yaml
   tags: gogs
 
 - name: Check if the Repository already exists

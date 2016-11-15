@@ -1,1 +1,2 @@
 project_description: ""
+pod_directory_deployment: /opt/java/server/as/wildfly/standalone/deployments-exploded/ROOT.war/

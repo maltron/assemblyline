@@ -1,0 +1,7 @@
+---
+- name: Testing OC Create
+  hosts: localhost
+  connection: local
+  tasks:
+     - name: Creating project
+       template: src=../roles/microservice/templates/wildfly-mysql.yaml.j2 dest=./wildfly-mysql.yaml

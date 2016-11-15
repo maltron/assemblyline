@@ -1,0 +1,7 @@
+- include: mandatory_variables.yaml
+
+- fail: msg="### Variable{{ ':' }} <microservice_name> is undefined. Please use -e option{{ ':' }} -e microservice_name=geography"
+  when: microservice_name is not defined
+
+- fail: msg="### Variable{{ ':' }} <microservice_package> is undefined. Please use -e option{{ ':' }} -e microservice_package=com.example.studies"
+  when: microservice_package is not defined

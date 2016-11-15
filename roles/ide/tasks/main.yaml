@@ -1,20 +1,22 @@
-- include: ../../../common/check_mandatory_variables.yaml
+- include: ../../../common/add_microservice_mandatory_variables.yaml 
   tags: netbeans
 
-- name: Create a Project Directory
-  file: path={{ project_directory }}/{{ project_name }}/{{ item }} state=directory
+- name: Create a MicroService Directory, under project's name
+  file: path={{ project_directory }}/{{ project_name }}/{{ microservice_name }}/{{ item }} state=directory
   with_items: 
+     - bin
      - src/main/resources/META-INF
      - src/main/webapp/WEB-INF
   tags: netbeans
 
 - name: Create Source Code Directory based on Project's Package
-  file: path={{ project_directory }}/{{ project_name }}/src/main/java/{{ project_package | regex_replace("\.", "/") }} state=directory
+  file: path={{ project_directory }}/{{ project_name }}/{{ microservice_name }}/src/main/java/{{ microservice_package | regex_replace("\.", "/") }} state=directory
   tags: netbeans
 
 - name: Create all the necessary files inside the project directory
-  template: src=project/netbeans/{{ item }}.j2 dest={{ project_directory }}/{{ project_name }}/{{ item }}
+  template: src=project/netbeans/{{ item }}.j2 dest={{ project_directory }}/{{ project_name }}/{{ microservice_name }}/{{ item }}
   with_items:
+     - bin/openshift-rsync.sh
      - nb-configuration.xml
      - pom.xml
      - src/main/resources/META-INF/persistence.xml

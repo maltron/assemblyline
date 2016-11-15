@@ -1,0 +1,10 @@
+- include: ../../../common/add_microservice_mandatory_variables.yaml
+  tags: microservice
+
+- name: Construct Pods definition for this microservice
+  template: src=wildfly-mysql.yaml.j2 dest=/tmp/wildfly-mysql-{{ project_name }}.yaml
+  tags: microservice
+
+- name: Deploy Pods 
+  command: oc create --namespace {{ project_name }} --filename /tmp/wildfly-mysql-{{ project_name }}.yaml
+  tags: microservice
