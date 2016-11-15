@@ -1,0 +1,8 @@
+--- 
+- name: Example Git
+  hosts: localhost
+  connection:
+  tasks:
+     - file: path=/tmp/examplegit state=directory
+
+     - command: cd /tmp/examplegit

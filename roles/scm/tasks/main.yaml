@@ -1,4 +1,5 @@
 - include: ../../../common/check_mandatory_variables.yaml
+  tags: gogs
 
 - name: Check if the Repository already exists
   uri: method=GET body_format=json url={{ gogs_url_api }}/user/repos
@@ -14,7 +15,16 @@
 - name: Create a new Repository named {{ project_name }}
   uri: method=POST body_format=json url={{ gogs_url_api }}/user/repos
        force_basic_auth=yes user={{ username }} password={{ password }}
-       body="{\"name\":\"{{ project_name }}\", \"description\":\"{{ project_description }}\", \"private\":{{ project_private | default(false) }} }"
+       body="{\"name\":\"{{ project_name }}\", \"description\":\"{{ project_display_name }}\", \"private\":{{ project_private | default(false) }} }"
   register: gogs_create_repository
   failed_when: gogs_create_repository.status != 201
+  tags: gogs
+
+- name: URL for this particular Project
+  set_fact: scm_repository_url={{ gogs_url }}/{{ username }}/{{ project_name }}.git
+  tags: gogs
+
+- name: Cloning an *EMPTY* Repository for the very First time
+  git: repo={{ scm_repository_url }} dest={{ project_directory }}/{{ project_name }}
+  ignore_errors: True
   tags: gogs

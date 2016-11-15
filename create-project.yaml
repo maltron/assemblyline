@@ -4,5 +4,5 @@
   connection: local
   roles:
      - scm
-     - paas
      - ide
+     - paas

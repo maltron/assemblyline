@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: WildFly Test Environment
+    labels:
+      stack: microservice
+      application: application-server
+    name: application-server
+  spec:
+    ports:
+    - port: 8080
+      targetPort: 8080
+    selector:
+      deploymentConfig: application-server
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: MySQL Database for Test Environment
+    labels:
+      stack: microservice
+      application: database-server
+    name: database-server
+  spec:
+    ports:
+    - port: 3306
+      targetPort: 3306
+    selector:
+      deploymentConfig: database-server
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      stack: microservice
+      application: application-server
+    name: application-server
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      stack: microservice
+      application: database-server
+    name: database-server
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      stack: microservice
+      application: application-server
+    name: application-server
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: application-server
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          stack: microservice
+          application: application-server
+          deploymentConfig: application-server
+        name: application-server
+      spec:
+        containers:
+        - env:
+          - name: DATASOURCE_CONNECTION
+            value: jdbc:mysql://database-server:3306/microservice_database
+          - name: DATASOURCE_USERNAME
+            value: mauricio
+          - name: DATASOURCE_PASSWORD
+            value: maltron
+          image: wildfly-test:latest
+          imagePullPolicy: IfNotPresent
+          name: application-server
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      stack: microservice
+      application: database-server
+    name: database-server
+  spec:
+    replicas: 1
+    selector:
+      deploymentConfig: database-server
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          application: database-server
+          deploymentConfig: database-server
+        name: database-server
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: mauricio
+          - name: MYSQL_PASSWORD
+            value: maltron
+          - name: MYSQL_DATABASE
+            value: microservice_database
+          image: ''
+          imagePullPolicy: IfNotPresent
+          name: database-server
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+        terminationGracePeriodSeconds: 60
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - database-server
+        from:
+          kind: ImageStreamTag
+          name: mysql:latest
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  id: application-server
+  kind: Route
+  metadata:
+    annotations:
+      description: WildFly's External Route
+    labels:
+      stack: microservice
+      application: application-server
+    name: application-server
+  spec:
+    to:
+      name: application-server

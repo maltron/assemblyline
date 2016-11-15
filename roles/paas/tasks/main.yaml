@@ -1,7 +1,10 @@
+- include: ../../../common/check_mandatory_variables.yaml
+  tags: openshift
+
 - name: Login into OpenShift
   command: oc login --username={{ username }} --password={{ password }} --insecure-skip-tls-verify --server={{ master_url }}
   tags: openshift
 
 - name: Creating Project 
-  command: oc new-project {{ project_name }} --description="{{ project_description }}"
+  command: oc new-project {{ project_name }} --display-name="{{ project_display_name }}" --description="{{ project_description }}"
   tags: openshift
