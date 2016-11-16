@@ -1,8 +1,11 @@
 - include: ../../../common/add_microservice_mandatory_variables.yaml 
   tags: netbeans
 
+- name: Create a variable where the destination will be
+  set_fact: microservice_destination={{ project_directory }}/{{ project_name }}/{{ microservice_name }}
+
 - name: Create a MicroService Directory, under project's name
-  file: path={{ project_directory }}/{{ project_name }}/{{ microservice_name }}/{{ item }} state=directory
+  file: path={{ microservice_destination }}/{{ item }} state=directory
   with_items: 
      - bin
      - src/main/resources/META-INF
@@ -10,13 +13,21 @@
   tags: netbeans
 
 - name: Create Source Code Directory based on Project's Package
-  file: path={{ project_directory }}/{{ project_name }}/{{ microservice_name }}/src/main/java/{{ microservice_package | regex_replace("\.", "/") }} state=directory
+  file: path={{ microservice_destination }}/src/main/java/{{ microservice_package | regex_replace("\.", "/") }} state=directory
   tags: netbeans
 
+- name: Create some core files to easy development
+  template: src=project/netbeans/common/{{ item }}.j2 dest={{ microservice_destination }}/src/main/java/{{ microservice_package | regex_replace("\.", "/") }}/{{ item }}
+  with_items:
+     - RESTEnabled.java
+     - Service.java
+     - Resource.java
+
 - name: Create all the necessary files inside the project directory
-  template: src=project/netbeans/{{ item }}.j2 dest={{ project_directory }}/{{ project_name }}/{{ microservice_name }}/{{ item }}
+  template: src=project/netbeans/{{ item }}.j2 dest={{ microservice_destination }}/{{ item }}
   with_items:
      - bin/openshift-rsync.sh
+     - bin/openshift-logs.sh
      - nb-configuration.xml
      - pom.xml
      - src/main/resources/META-INF/persistence.xml
@@ -27,3 +38,9 @@
      - src/main/webapp/WEB-INF/jboss-web.xml
      - src/main/webapp/WEB-INF/web.xml
   tags: netbeans
+
+- name: Files in bin must be able to have Execution permission
+  file: path={{ microservice_destination }}/bin/{{ item }} mode="a+x"
+  with_items:
+     - openshift-rsync.sh
+     - openshift-logs.sh

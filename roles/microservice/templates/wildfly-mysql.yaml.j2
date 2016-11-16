@@ -78,7 +78,7 @@ items:
         containers:
         - env:
           - name: DATASOURCE_CONNECTION
-            value: jdbc:mysql://database-server:3306/microservice_database
+            value: jdbc:mysql://{{ microservice_name }}-db:3306/microservice_database
           - name: DATASOURCE_USERNAME
             value: mauricio
           - name: DATASOURCE_PASSWORD

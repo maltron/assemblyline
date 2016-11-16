@@ -1,0 +1,12 @@
+package {{ microservice_package }};
+
+import javax.ejb.EJB;
+import javax.ws.rs.Path;
+
+@Path("/v1")
+public class Resource {
+    
+    @EJB
+    private Service service;
+    
+}

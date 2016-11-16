@@ -1,0 +1,2 @@
+POD_NAME=$(oc get pods -l component=application-server,name={{ microservice_name }} | grep -v NAME | awk '{print $1}')
+oc logs --follow ${POD_NAME}
